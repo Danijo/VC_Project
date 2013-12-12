@@ -273,6 +273,8 @@ class PSI extends Frame implements ActionListener {
 		}
 		
 		
+		/*
+		//ciclo para aceder ao vector de imagem como uma matriz
 		for (x=1; x < (sizey-1); x++)
 		{
 			int tmp = x * sizex;
@@ -281,6 +283,8 @@ class PSI extends Frame implements ActionListener {
 			for (y = 1; y < (sizex-1); y++){
 				z = tmp+y;
 	
+				
+				//Sobel
 				vermelho1 = getRed(matrix[z-(sizex-1)]) + (getRed(matrix[z-sizex]) * 2) + getRed(matrix[z-(sizex+1)]) - (getRed(matrix[z+(sizex-1)]) +  (getRed(matrix[z+sizex]) * 2)  + getRed(matrix[z+(sizex+1)]));
 				verde1    = getGreen(matrix[z-(sizex-1)]) + (getGreen(matrix[z-sizex]) * 2) + getGreen(matrix[z-(sizex+1)]) - (getGreen(matrix[z+(sizex-1)]) + (getGreen(matrix[z+sizex]) * 2) + getGreen(matrix[z+(sizex+1)]));
 				azul1     = getBlue(matrix[z-(sizex-1)]) + (getBlue(matrix[z-sizex]) * 2) + getBlue(matrix[z-(sizex+1)]) - (getBlue(matrix[z+(sizex-1)]) + (getBlue(matrix[z+sizex]) * 2) + getBlue(matrix[z+(sizex+1)]));
@@ -318,7 +322,7 @@ class PSI extends Frame implements ActionListener {
 				matrix[z] = makeColor((int) r,(int) g ,(int) b);
 			}
 		}
-			
+			*/
 		
 		
 		// Ap�s a manipula�ao da matrix, � necess�rio criar o objecto gr�fico (image) 
