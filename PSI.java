@@ -20,6 +20,7 @@ class PSI extends Frame implements ActionListener {
 	private int sizex;
 	private int sizey;;
 	private int matrix[];
+	private int matrixaux[];
 	ImagePanel imagePanel; // E se eu quiser m�ltiplas janelas?
 	
 	// Fun��o main cria uma instance din�mica da classe
@@ -187,7 +188,7 @@ class PSI extends Frame implements ActionListener {
 	{
 		// Load Image - Escolher nome da imagem a carregar!
 		// Bem mais interessante usar uma interface gr�fica para isto...
-		LoadImage("lena.jpg");
+		LoadImage("eye.jpg");
 	
 		// Obter matriz da imagem
 		// A vari�vel "matrix" fica com os valores de cada pixel da imagem
@@ -201,6 +202,7 @@ class PSI extends Frame implements ActionListener {
 		sizex = image.getWidth(null);
 		sizey = image.getHeight(null);
 		matrix = new int[sizex*sizey];
+		matrixaux = new int[sizex*sizey];
 		PixelGrabber pg = new PixelGrabber(image, 0, 0, sizex, sizey, matrix, 0, sizex);
 		try {
 		    pg.grabPixels();
@@ -229,7 +231,7 @@ class PSI extends Frame implements ActionListener {
 
 		// Vari�veis de apoio
 		int verde, vermelho, azul, cinzento, vermelho1, verde1, azul1, vermelho2, verde2, azul2;
-		int x, y, z;
+		int x, y, z, z1,z2,z3,z4,z5,z6,z7,z8,z9;
 
 		
 		// Ciclo que percorre a imagem inteira
@@ -250,7 +252,6 @@ class PSI extends Frame implements ActionListener {
 		
 		
 		
-		
 		for (x=1; x < (sizey-1); x++)
 		{
 			int tmp = x * sizex;
@@ -266,33 +267,58 @@ class PSI extends Frame implements ActionListener {
 				azul = (getBlue(matrix[z]) + getBlue(matrix[z+1]) + getBlue(matrix[z-1]) +  getBlue(matrix[z-(sizex-1)]) + getBlue(matrix[z-sizex]) + getBlue(matrix[z-(sizex+1)]) + getBlue(matrix[z+(sizex-1)]) + getBlue(matrix[z+sizex]) + getBlue(matrix[z+(sizex+1)])) / 9;
 			
 
-				matrix[z] = makeColor(vermelho, verde, azul);
+				matrixaux[z] = makeColor(vermelho, verde, azul);
 				//matrix[z] = makeColor(255, 255, 255);
 				//System.out.println(z);
 			}
 		}
 		
+		//matrix = matrixaux;
+
 		
-		/*
+		
 		//ciclo para aceder ao vector de imagem como uma matriz
 		for (x=1; x < (sizey-1); x++)
 		{
+			
 			int tmp = x * sizex;
 			//System.out.println(x);
 				
 			for (y = 1; y < (sizex-1); y++){
 				z = tmp+y;
 	
+				z1 = z-sizex-1;
+				z2 = z-sizex;
+				z3 = z-sizex+1;
+				z4 = z - 1;
+				z6 = z + 1;
+				z7 = z+sizex-1;
+				z8 = z+sizex;
+				z9 = z+sizex+1;
+			
 				
 				//Sobel
-				vermelho1 = getRed(matrix[z-(sizex-1)]) + (getRed(matrix[z-sizex]) * 2) + getRed(matrix[z-(sizex+1)]) - (getRed(matrix[z+(sizex-1)]) +  (getRed(matrix[z+sizex]) * 2)  + getRed(matrix[z+(sizex+1)]));
-				verde1    = getGreen(matrix[z-(sizex-1)]) + (getGreen(matrix[z-sizex]) * 2) + getGreen(matrix[z-(sizex+1)]) - (getGreen(matrix[z+(sizex-1)]) + (getGreen(matrix[z+sizex]) * 2) + getGreen(matrix[z+(sizex+1)]));
-				azul1     = getBlue(matrix[z-(sizex-1)]) + (getBlue(matrix[z-sizex]) * 2) + getBlue(matrix[z-(sizex+1)]) - (getBlue(matrix[z+(sizex-1)]) + (getBlue(matrix[z+sizex]) * 2) + getBlue(matrix[z+(sizex+1)]));
+				int vermaux1 = getRed(matrix[z1]) + getRed(matrix[z2]) + getRed(matrix[z2]) + getRed(matrix[z3]); 
+				int vermaux2 = getRed(matrix[z7]) +  getRed(matrix[z8]) + getRed(matrix[z8])  + getRed(matrix[z9]);
+				vermelho1 = vermaux1 - vermaux2; 
+				int verdaux1 = getGreen(matrix[z1]) + getGreen(matrix[z2]) + getGreen(matrix[z2]) + getGreen(matrix[z3]); 
+				int verdaux2 = getGreen(matrix[z7]) + getGreen(matrix[z8]) + getGreen(matrix[z8]) + getGreen(matrix[z9]);
+				verde1    = verdaux1 - verdaux2;
+				int azulaux1 = getBlue(matrix[z1]) + getBlue(matrix[z2]) + getBlue(matrix[z2]) + getBlue(matrix[z3]);
+				int azulaux2 = getBlue(matrix[z7]) + getBlue(matrix[z8]) + getBlue(matrix[z8]) + getBlue(matrix[z9]);		
+				azul1     =  azulaux1 - azulaux2; 
 						
-				vermelho2 = getRed(matrix[z-(sizex+1)]) + (getRed(matrix[z+1]) * 2) + getRed(matrix[z+(sizex+1)]) - (getRed(matrix[z-(sizex-1)]) + (getRed(matrix[z-1]) * 2) + getRed(matrix[z+(sizex-1)]));
-				verde2    = getGreen(matrix[z-(sizex+1)]) + (getGreen(matrix[z+1]) * 2) + getGreen(matrix[z+(sizex+1)]) - (getGreen(matrix[z-(sizex-1)]) + (getGreen(matrix[z-1]) * 2) + getGreen(matrix[z+(sizex-1)]));
-				azul2     = getBlue(matrix[z-(sizex+1)]) + (getBlue(matrix[z+1]) * 2) + getBlue(matrix[z+(sizex+1)]) - (getBlue(matrix[z-(sizex-1)]) + (getBlue(matrix[z-1]) * 2) + getBlue(matrix[z+(sizex-1)]));
+				int verm2aux1 = getRed(matrix[z3]) + getRed(matrix[z6]) + getRed(matrix[z6]) + getRed(matrix[z9]);
+				int verm2aux2 = getRed(matrix[z1]) + getRed(matrix[z4]) + getRed(matrix[z4]) + getRed(matrix[z7]); 
+				vermelho2 = verm2aux1 - verm2aux2; 
+				int verd2aux1 = getGreen(matrix[z3]) + getGreen(matrix[z6]) + getGreen(matrix[z6]) + getGreen(matrix[z9]);
+				int verd2aux2 = getGreen(matrix[z1]) + getGreen(matrix[z4]) + getGreen(matrix[z4]) + getGreen(matrix[z7]); 
+				verde2    = verd2aux1 - verd2aux2;
+				int azul2aux1 = getBlue(matrix[z3]) + getBlue(matrix[z6]) + getBlue(matrix[z6]) + getBlue(matrix[z9]);
+				int azul2aux2 = getBlue(matrix[z1]) + getBlue(matrix[z4]) + getBlue(matrix[z4]) + getBlue(matrix[z7]); 
+				azul2     = azul2aux1 - azul2aux2; 
 
+				
 				
 				int red = (vermelho1*vermelho1) + (vermelho2*vermelho2);
 				int green = (verde1*verde1) + (verde2*verde2);
@@ -302,11 +328,15 @@ class PSI extends Frame implements ActionListener {
 				double g = Math.sqrt(green);
 				double b = Math.sqrt(blue);
 			
+				
+				/*
 				System.out.print(r);
 				System.out.print(" ");
 				System.out.print(g);
 				System.out.print(" ");
 				System.out.println(b);
+				*/
+				
 				
 				if (r > 255) {r = 255;}
 				if (g > 255) {g = 255;}
@@ -318,11 +348,35 @@ class PSI extends Frame implements ActionListener {
 				if (b < 0) {b = 0;}
 				
 				
-				//matrix[z] = makeColor(red,green,blue);
-				matrix[z] = makeColor((int) r,(int) g ,(int) b);
+
+				matrixaux[z] = makeColor((int) r,(int) g ,(int) b);
 			}
 		}
-			*/
+		
+		int T = 120;
+		
+		for (x=0; x < sizex*sizey; x++)
+		{
+			vermelho = getRed(matrix[x]);
+			verde = getGreen(matrix[x]);
+			azul = getBlue(matrix[x]);
+			
+			
+			int media = (vermelho+verde+azul)/3;
+			
+			if (media < T){
+			
+				matrixaux[x] = makeColor(0, 0, 0);
+			}
+			
+			else{
+				matrixaux[x] = makeColor(255, 255, 255);
+			}
+		}
+		
+		
+		matrix = matrixaux;
+		
 		
 		
 		// Ap�s a manipula�ao da matrix, � necess�rio criar o objecto gr�fico (image) 
