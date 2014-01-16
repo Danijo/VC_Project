@@ -109,10 +109,35 @@ class PSI extends Frame implements ActionListener {
 	
 	private void mudarS(){
 		
-		int x;
-		int verde = 0, vermelho = 0, azul = 0, cinzento;
-		int saturacao;
+		int x , y;
+		int verde = 0, vermelho = 0, azul = 0, cinzento = 0, z = 0;
+		float saturacao = 0;
 
+		//sizex*sizey
+		
+		
+		for (x=1; x < (sizey-1); x++)
+		{
+			int tmp = x * sizex;
+			//System.out.println(x);
+			
+			
+			for (y = 1; y < (sizex-1); y++){
+				z = tmp+y;
+	
+				
+				vermelho = (getRed(matrix[z]) + getRed(matrix[z+1]) + getRed(matrix[z-1]) +  getRed(matrix[z-(sizex-1)]) + getRed(matrix[z-sizex]) + getRed(matrix[z-(sizex+1)]) + getRed(matrix[z+(sizex-1)]) + getRed(matrix[z+sizex]) + getRed(matrix[z+(sizex+1)])) / 9;
+				verde = (getGreen(matrix[z]) + getGreen(matrix[z+1]) + getGreen(matrix[z-1]) +  getGreen(matrix[z-(sizex-1)]) + getGreen(matrix[z-sizex]) + getGreen(matrix[z-(sizex+1)]) + getGreen(matrix[z+(sizex-1)]) + getGreen(matrix[z+sizex]) + getGreen(matrix[z+(sizex+1)])) / 9;
+				azul = (getBlue(matrix[z]) + getBlue(matrix[z+1]) + getBlue(matrix[z-1]) +  getBlue(matrix[z-(sizex-1)]) + getBlue(matrix[z-sizex]) + getBlue(matrix[z-(sizex+1)]) + getBlue(matrix[z+(sizex-1)]) + getBlue(matrix[z+sizex]) + getBlue(matrix[z+(sizex+1)])) / 9;
+			
+
+				matrix[z] = makeColor(vermelho, verde, azul);
+				//matrix[z] = makeColor(255, 255, 255);
+				//System.out.println(z);
+			}
+		}
+			
+			
 			
 		for (x=0; x < sizex*sizey; x++)
 		{
@@ -121,25 +146,41 @@ class PSI extends Frame implements ActionListener {
 			verde = getGreen(matrix[x]);
 			azul = getBlue(matrix[x]);
 			
-		}
+		
 			
-		//Saturacao
-		saturacao = 1-(3/(vermelho+verde+azul));
 		
 					
-		if (vermelho > verde){
-			if (vermelho > azul){
-				saturacao = 1-(3/(vermelho+verde+azul))*vermelho;
+			if (vermelho < verde){
+				if (vermelho < azul){
+					saturacao = (float) 1-(float)(3*vermelho)/(float)(vermelho+verde+azul);
+					cinzento = vermelho;
+				}
 			}
+			else 
+				if (verde < azul){
+					saturacao = (float) 1-(float)(3*verde)/(float)(vermelho+verde+azul);
+					cinzento = verde;
+				}
+				else{
+					saturacao = (float) 1-(float)(3*azul)/(float)(vermelho+verde+azul);
+					cinzento = azul;
+				}
+			//System.out.println(saturacao);
+			//System.out.print(" ");
+		
+			if (saturacao > 0.05) {
+				int s = (int)(saturacao * 255);
+				matrix[x] = makeColor(s, s, s);
+			}
+			
+			//System.out.print(vermelho+verde+azul);
+			//System.out.print(" ");
+			//System.out.println(3.0*cinzento);
+		 
+			
+			
 		}
-		else 
-			if (verde > azul)
-				saturacao = 1-(3/(vermelho+verde+azul))*verde;
-			else
-				saturacao = 1-(3/(vermelho+verde+azul))*azul;
-		
-		matrix[x] = makeColor(saturacao, saturacao, saturacao);
-		
+			
 		// Ap�s a manipula�ao da matrix, � necess�rio criar o objecto gr�fico (image) 
 		image = createImage(new MemoryImageSource(sizex, sizey, matrix, 0, sizex));
 		
@@ -276,6 +317,28 @@ class PSI extends Frame implements ActionListener {
 		//matrix = matrixaux;
 
 		
+		int T = 50;
+		
+		for (x=0; x < sizex*sizey; x++)
+		{
+			vermelho = getRed(matrix[x]);
+			verde = getGreen(matrix[x]);
+			azul = getBlue(matrix[x]);
+			
+			
+			int media = (vermelho+verde+azul)/3;
+			
+			if (media < T){
+			
+				matrixaux[x] = makeColor(0, 0, 0);
+			}
+			
+			else{
+				matrixaux[x] = makeColor(255, 255, 255);
+			}
+		}
+		
+			
 		
 		//ciclo para aceder ao vector de imagem como uma matriz
 		for (x=1; x < (sizey-1); x++)
@@ -319,23 +382,16 @@ class PSI extends Frame implements ActionListener {
 				azul2     = azul2aux1 - azul2aux2; 
 
 				
-				
 				int red = (vermelho1*vermelho1) + (vermelho2*vermelho2);
 				int green = (verde1*verde1) + (verde2*verde2);
 				int blue = (azul1*azul1) + (azul2*azul2);
-						
+				
+				
 				double r = Math.sqrt(red);
 				double g = Math.sqrt(green);
 				double b = Math.sqrt(blue);
 			
-				
-				/*
-				System.out.print(r);
-				System.out.print(" ");
-				System.out.print(g);
-				System.out.print(" ");
-				System.out.println(b);
-				*/
+		
 				
 				
 				if (r > 255) {r = 255;}
@@ -353,29 +409,85 @@ class PSI extends Frame implements ActionListener {
 			}
 		}
 		
-		int T = 120;
 		
-		for (x=0; x < sizex*sizey; x++)
+		int a = 0, b = 0;
+		int matrizbi[][] = new int[sizex][sizey];
+		int votos[][][] = new int[sizex][sizey][100];
+		
+		for (x=0; x < (sizey); x++)
 		{
-			vermelho = getRed(matrix[x]);
-			verde = getGreen(matrix[x]);
-			azul = getBlue(matrix[x]);
 			
-			
-			int media = (vermelho+verde+azul)/3;
-			
-			if (media < T){
-			
-				matrixaux[x] = makeColor(0, 0, 0);
-			}
-			
-			else{
-				matrixaux[x] = makeColor(255, 255, 255);
+			int tmp = x * sizex;
+			//System.out.println(x);
+				
+			for (y = 0; y < (sizex); y++){
+				z = tmp+y;
+	
+				matrizbi[y][x] = matrix[z];
+				
 			}
 		}
+				
+		for (int i = 1 ; i < (sizex-1) ; i++){		
+			for(int j = 1 ; j < (sizey-1) ; j++){
+		
+				for(int raio = 80; raio < 100; raio ++){
+					for(int angulo = 0; angulo < 360; angulo++){
+						a = (int) (i + raio * Math.cos(angulo));
+						b = (int) (j + raio * Math.sin(angulo));
+						
+						if (a > 0){
+							if (b > 0){
+								if (a < sizey){
+									if (b < sizex){
+								
+										int red = getRed(matrizbi[b][a]); 
+										int green = getGreen(matrizbi[b][a]);
+										int Blue = getBlue(matrizbi[b][a]);
+						
+										if (red > 248){
+											if (green > 248){
+												if (Blue > 248){
+													votos[i][j][raio] += 1;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					
+					}
+					
+				}
+
+			}
+		}
+				
+	
+		
+		for (int i = 1 ; i < (sizex-1) ; i++){		
+			for(int j = 1 ; j < (sizey-1) ; j++){
+					for(int r = 80; r < 100; r ++){
+						if (votos[i][j][r] > 355){
+							for(int angulo = 0; angulo < 360; angulo++){
+								a = (int) (i + r * Math.cos(angulo));
+								b = (int) (j + r * Math.sin(angulo));
+								
+								matrixaux[(a*sizex) + b]  = makeColor(255,0,0);
+							}
+						}
+					}
+			}
+		}	
+		
+		
 		
 		
 		matrix = matrixaux;
+		
+		
+		int matrixacum[] = new int[sizex*sizey];
 		
 		
 		
